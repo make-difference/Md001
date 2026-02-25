@@ -1,0 +1,21 @@
+body {
+  background:black;
+  color:#FFD700;
+  font-family:tahoma;
+  text-align:center;
+}
+input,select,button {
+  display:block;
+  margin:10px auto;
+  padding:8px;
+}
+button {
+  background:black;
+  color:#FFD700;
+  border:1px solid #FFD700;
+}
+button:hover {
+  background:#FFD700;
+  color:black;
+}
+span { color:white }
