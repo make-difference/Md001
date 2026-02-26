@@ -1,14 +1,13 @@
 body {
-  margin: 0;
-  background: #0b0b0b;
-  color: #ffd700;
-  font-family: "Tajawal", Arial, sans-serif;
-  min-height: 100vh;
+  background: #000;
+  color: #FFD700;
+  font-family: Tahoma, Arial;
+  text-align: center;
+  padding: 20px;
 }
 
-h1, h2, h3 {
-  text-align: center;
-  margin-bottom: 20px;
+h1 {
+  font-size: 36px;
 }
 
 h1 span {
@@ -16,55 +15,30 @@ h1 span {
 }
 
 .container {
-  max-width: 420px;
+  max-width: 400px;
   margin: auto;
-  padding: 20px;
-}
-
-.card {
-  background: #111;
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.08);
 }
 
 a, button {
   display: block;
-  width: 100%;
-  background: linear-gradient(135deg, #ffd700, #ffb700);
+  background: #FFD700;
   color: #000;
-  text-align: center;
-  padding: 14px;
+  padding: 15px;
   margin: 10px 0;
-  border-radius: 12px;
-  font-weight: bold;
   text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
   border: none;
-  cursor: pointer;
-}
-
-a:hover, button:hover {
-  opacity: 0.9;
 }
 
 input, select {
   width: 100%;
   padding: 12px;
-  margin: 8px 0;
-  border-radius: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
   border: none;
-  background: #1c1c1c;
-  color: #ffd700;
-  font-size: 15px;
 }
 
-input::placeholder {
-  color: #888;
-}
-
-.info-box {
-  background: #151515;
-  border-radius: 12px;
-  padding: 15px;
-  margin-top: 15px;
+button:hover, a:hover {
+  background: #fff;
 }
