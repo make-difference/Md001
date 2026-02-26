@@ -66,84 +66,106 @@ function addSubscriber() {
   alert(`تم تسجيل ${subscriber.name} بنجاح ✅\nID: ${subscriber.id}`);
 }
 
-/* ================= Search ================= */
+const STORAGE_KEY = "subscribers_data";
+const ID_COUNTER_KEY = "subscriber_id_counter";
 
-function findSubscriber(value) {
-  value = value.toLowerCase();
+let currentSubscriber = null;
+
+/* Helpers */
+function getSubscribers() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
+
+function saveSubscribers(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+/* ID ترتيبي */
+function generateID() {
+  let counter = localStorage.getItem(ID_COUNTER_KEY);
+  counter = counter ? parseInt(counter) + 1 : 1;
+  localStorage.setItem(ID_COUNTER_KEY, counter);
+  return counter.toString().padStart(6, "0");
+}
+
+/* إضافة مشترك */
+function addSubscriber() {
+  const subscriber = {
+    id: generateID(),
+    name: name.value.trim(),
+    phone: phone.value.trim(),
+    plan: plan.value.trim(),
+    remainingDays: parseInt(duration.value),
+    meals: {
+      chicken: +chicken.value || 0,
+      meat: +meat.value || 0,
+      fish: +fish.value || 0,
+      snack: +snack.value || 0
+    }
+  };
+
   const data = getSubscribers();
+  data.push(subscriber);
+  saveSubscribers(data);
 
-  return data.find(s =>
-    s.id === value ||
-    s.phone === value ||
-    s.name.toLowerCase().includes(value)
+  alert(`تم تسجيل ${subscriber.name}\nID: ${subscriber.id}`);
+}
+
+/* البحث */
+function findSubscriber(val) {
+  val = val.toLowerCase();
+  return getSubscribers().find(s =>
+    s.id === val || s.phone === val || s.name.toLowerCase().includes(val)
   );
 }
 
 function searchSubscriber() {
-  const value = document.getElementById("search").value.trim();
-  const subscriber = findSubscriber(value);
+  const sub = findSubscriber(search.value.trim());
+  if (!sub) return alert("غير موجود");
 
-  if (!subscriber) {
-    alert("المشترك غير موجود");
-    return;
-  }
+  currentSubscriber = sub;
+  showSubscriberInfo(sub);
 
-  currentSubscriber = subscriber;
-  showSubscriberInfo(subscriber);
-  document.getElementById("consumeBox").style.display = "block";
+  const box = document.getElementById("consumeBox");
+  if (box) box.style.display = "block";
 }
 
-/* ================= Consume All ================= */
+/* عرض */
+function showSubscriberInfo(s) {
+  info.innerHTML = `
+    <p><b>${s.name}</b></p>
+    <p>ID: ${s.id}</p>
+    <p>أيام متبقية: ${s.remainingDays}</p>
+    <p>🍗 ${s.meals.chicken} | 🥩 ${s.meals.meat} | 🐟 ${s.meals.fish} | 🍪 ${s.meals.snack}</p>
+  `;
+}
 
+/* استهلاك دفعة واحدة */
 function consumeAll() {
-  if (!currentSubscriber) return;
-
-  const c = parseInt(document.getElementById("c_chicken").value) || 0;
-  const m = parseInt(document.getElementById("c_meat").value) || 0;
-  const f = parseInt(document.getElementById("c_fish").value) || 0;
-  const s = parseInt(document.getElementById("c_snack").value) || 0;
+  const c = +c_chicken.value || 0;
+  const m = +c_meat.value || 0;
+  const f = +c_fish.value || 0;
+  const s = +c_snack.value || 0;
 
   if (
     c > currentSubscriber.meals.chicken ||
     m > currentSubscriber.meals.meat ||
     f > currentSubscriber.meals.fish ||
     s > currentSubscriber.meals.snack
-  ) {
-    alert("الاستهلاك أكبر من المتبقي");
-    return;
-  }
+  ) return alert("الاستهلاك أكبر من المتبقي");
 
   currentSubscriber.meals.chicken -= c;
   currentSubscriber.meals.meat -= m;
   currentSubscriber.meals.fish -= f;
   currentSubscriber.meals.snack -= s;
+  currentSubscriber.remainingDays -= (c+m+f+s);
 
-  const totalUsed = c + m + f + s;
-  currentSubscriber.remainingDays -= totalUsed;
-
-  const data = getSubscribers().map(s =>
-    s.id === currentSubscriber.id ? currentSubscriber : s
+  saveSubscribers(
+    getSubscribers().map(s =>
+      s.id === currentSubscriber.id ? currentSubscriber : s
+    )
   );
 
-  saveSubscribers(data);
   showSubscriberInfo(currentSubscriber);
-
-  alert("تم تسجيل الاستهلاك بنجاح ✅");
-}
-
-/* ================= Show Info ================= */
-
-function showSubscriberInfo(subscriber) {
-  const box = document.getElementById("info");
-  if (!box) return;
-
-  box.innerHTML = `
-    <p><b>الاسم:</b> ${subscriber.name}</p>
-    <p><b>ID:</b> ${subscriber.id}</p>
-    <p><b>أيام متبقية:</b> ${subscriber.remainingDays}</p>
-    <p>🍗 دجاج: ${subscriber.meals.chicken}</p>
-    <p>🥩 لحم: ${subscriber.meals.meat}</p>
-    <p>🐟 سمك: ${subscriber.meals.fish}</p>
-    <p>🍪 سناك: ${subscriber.meals.snack}</p>
-  `;
+  alert("تم تسجيل الاستهلاك ✅");
 }
