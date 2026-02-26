@@ -7,31 +7,23 @@
 </head>
 <body>
 
-<h2>تسجيل استهلاك الوجبات</h2>
+<h2>تسجيل استهلاك</h2>
 
-<div class="container">
-  <div class="card">
+<input id="search" placeholder="اسم / جوال / ID">
+<button onclick="searchSubscriber()">بحث</button>
 
-    <input id="search" placeholder="اسم / جوال / ID">
-    <button onclick="searchSubscriber()">بحث</button>
+<div id="info"></div>
 
-    <div id="info" class="info-box"></div>
+<h3>استهلاك اليوم</h3>
+<input id="c1" type="number" placeholder="دجاج">
+<input id="c2" type="number" placeholder="لحم">
+<input id="c3" type="number" placeholder="سمك">
+<input id="c4" type="number" placeholder="سناك">
 
-    <div id="consumeBox" style="display:none">
-      <h3>إدخال الاستهلاك</h3>
+<button onclick="consumeAll()">تسجيل الاستهلاك</button>
 
-      <input id="c_chicken" type="number" placeholder="🍗 دجاج">
-      <input id="c_meat" type="number" placeholder="🥩 لحم">
-      <input id="c_fish" type="number" placeholder="🐟 سمك">
-      <input id="c_snack" type="number" placeholder="🍪 سناك">
-
-      <button onclick="consumeAll()">تسجيل الاستهلاك</button>
-    </div>
-
-    <a href="index.html">⬅ رجوع</a>
-
-  </div>
-</div>
+<br>
+<a href="index.html">⬅️ رجوع</a>
 
 <script src="js/app.js"></script>
 </body>
