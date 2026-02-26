@@ -1,33 +1,37 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <title>تسجيل استهلاك</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+body {
+  background: #000;
+  color: #ffd700;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
 
-<h2>تسجيل استهلاك وجبات</h2>
+h1 span {
+  color: white;
+}
 
-<input id="search" placeholder="اسم / جوال / ID">
-<button onclick="searchSubscriber()">بحث</button>
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+  margin: auto;
+}
 
-<div id="info"></div>
+a, button {
+  background: #ffd700;
+  color: #000;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  border: none;
+}
 
-<div id="consumeBox" style="display:none">
-  <h3>إدخال الاستهلاك</h3>
-
-  <input id="c_chicken" type="number" placeholder="🍗 دجاج">
-  <input id="c_meat" type="number" placeholder="🥩 لحم">
-  <input id="c_fish" type="number" placeholder="🐟 سمك">
-  <input id="c_snack" type="number" placeholder="🍪 سناك">
-
-  <button onclick="consumeAll()">تسجيل الاستهلاك</button>
-</div>
-
-<br>
-<a href="index.html">⬅️ رجوع</a>
-
-<script src="js/app.js"></script>
-</body>
-</html>
+input, select {
+  width: 90%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: none;
+}
