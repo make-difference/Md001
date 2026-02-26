@@ -1,77 +1,8 @@
-/**************************************************
- * Healthy Meals System - FINAL VERSION
- **************************************************/
-
 const STORAGE_KEY = "subscribers_data";
 const ID_COUNTER_KEY = "subscriber_id_counter";
 
 let currentSubscriber = null;
 
-/* ================= Helpers ================= */
-
-function getSubscribers() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-}
-
-function saveSubscribers(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-/* ====== ID Generator (000001, 000002...) ====== */
-function generateID() {
-  let counter = localStorage.getItem(ID_COUNTER_KEY);
-
-  if (!counter) {
-    counter = 1;
-  } else {
-    counter = parseInt(counter) + 1;
-  }
-
-  localStorage.setItem(ID_COUNTER_KEY, counter);
-  return counter.toString().padStart(6, "0");
-}
-
-/* ================= Add Subscriber ================= */
-
-function addSubscriber() {
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const plan = document.getElementById("plan")?.value || "";
-  const duration = parseInt(document.getElementById("duration").value);
-
-  if (!name || !phone) {
-    alert("يرجى إدخال الاسم ورقم الجوال");
-    return;
-  }
-
-  const subscriber = {
-    id: generateID(),
-    name,
-    phone,
-    plan,
-    duration,
-    remainingDays: duration,
-    meals: {
-      chicken: parseInt(document.getElementById("chicken").value) || 0,
-      meat: parseInt(document.getElementById("meat").value) || 0,
-      fish: parseInt(document.getElementById("fish").value) || 0,
-      snack: parseInt(document.getElementById("snack").value) || 0
-    }
-  };
-
-  const data = getSubscribers();
-  data.push(subscriber);
-  saveSubscribers(data);
-
-  alert(`تم تسجيل ${subscriber.name} بنجاح ✅\nID: ${subscriber.id}`);
-}
-
-const STORAGE_KEY = "subscribers_data";
-const ID_COUNTER_KEY = "subscriber_id_counter";
-
-let currentSubscriber = null;
-
-/* Helpers */
 function getSubscribers() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 }
@@ -121,7 +52,7 @@ function findSubscriber(val) {
 
 function searchSubscriber() {
   const sub = findSubscriber(search.value.trim());
-  if (!sub) return alert("غير موجود");
+  if (!sub) return alert("المشترك غير موجود");
 
   currentSubscriber = sub;
   showSubscriberInfo(sub);
@@ -133,14 +64,14 @@ function searchSubscriber() {
 /* عرض */
 function showSubscriberInfo(s) {
   info.innerHTML = `
-    <p><b>${s.name}</b></p>
-    <p>ID: ${s.id}</p>
-    <p>أيام متبقية: ${s.remainingDays}</p>
+    <p><b>الاسم:</b> ${s.name}</p>
+    <p><b>ID:</b> ${s.id}</p>
+    <p><b>أيام متبقية:</b> ${s.remainingDays}</p>
     <p>🍗 ${s.meals.chicken} | 🥩 ${s.meals.meat} | 🐟 ${s.meals.fish} | 🍪 ${s.meals.snack}</p>
   `;
 }
 
-/* استهلاك دفعة واحدة */
+/* استهلاك */
 function consumeAll() {
   const c = +c_chicken.value || 0;
   const m = +c_meat.value || 0;
