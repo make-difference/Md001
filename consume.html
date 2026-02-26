@@ -2,35 +2,32 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تسجيل استهلاك</title>
-
-  <!-- الربط الصحيح مع CSS -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <h2>تسجيل استهلاك وجبة</h2>
+<h2>تسجيل استهلاك وجبات</h2>
 
-  <div class="container">
-    <input id="search" placeholder="اسم / رقم جوال / ID">
-    <button onclick="searchSubscriber()">بحث</button>
+<input id="search" placeholder="اسم / جوال / ID">
+<button onclick="searchSubscriber()">بحث</button>
 
-    <div id="info"></div>
+<div id="info"></div>
 
-    <hr>
+<div id="consumeBox" style="display:none">
+  <h3>إدخال الاستهلاك</h3>
 
-    <button onclick="consumeMeal('chicken')">🍗 استهلاك دجاج</button>
-    <button onclick="consumeMeal('meat')">🥩 استهلاك لحم</button>
-    <button onclick="consumeMeal('fish')">🐟 استهلاك سمك</button>
-    <button onclick="consumeMeal('snack')">🍪 استهلاك سناك</button>
+  <input id="c_chicken" type="number" placeholder="🍗 دجاج">
+  <input id="c_meat" type="number" placeholder="🥩 لحم">
+  <input id="c_fish" type="number" placeholder="🐟 سمك">
+  <input id="c_snack" type="number" placeholder="🍪 سناك">
 
-    <br>
-    <a href="index.html">⬅️ رجوع</a>
-  </div>
+  <button onclick="consumeAll()">تسجيل الاستهلاك</button>
+</div>
 
-  <!-- الربط الصحيح مع JS -->
-  <script src="app.js"></script>
+<br>
+<a href="index.html">⬅️ رجوع</a>
 
+<script src="js/app.js"></script>
 </body>
 </html>
