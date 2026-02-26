@@ -2,18 +2,35 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تسجيل استهلاك</title>
-  <link rel="stylesheet" href="css/style.css">
+
+  <!-- الربط الصحيح مع CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>تسجيل استهلاك وجبة</h2>
+  <h2>تسجيل استهلاك وجبة</h2>
 
-<input placeholder="اسم / جوال / ID">
-<button>بحث</button>
+  <div class="container">
+    <input id="search" placeholder="اسم / رقم جوال / ID">
+    <button onclick="searchSubscriber()">بحث</button>
 
-<br><br>
-<a href="index.html">⬅️ رجوع</a>
+    <div id="info"></div>
+
+    <hr>
+
+    <button onclick="consumeMeal('chicken')">🍗 استهلاك دجاج</button>
+    <button onclick="consumeMeal('meat')">🥩 استهلاك لحم</button>
+    <button onclick="consumeMeal('fish')">🐟 استهلاك سمك</button>
+    <button onclick="consumeMeal('snack')">🍪 استهلاك سناك</button>
+
+    <br>
+    <a href="index.html">⬅️ رجوع</a>
+  </div>
+
+  <!-- الربط الصحيح مع JS -->
+  <script src="app.js"></script>
 
 </body>
 </html>
