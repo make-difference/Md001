@@ -1,32 +1,27 @@
-const STORAGE_KEY = "subscribers_data";
-const ID_COUNTER_KEY = "subscriber_id_counter";
+const KEY = "subs";
+const ID_KEY = "last_id";
 
-let currentSubscriber = null;
-
-function getSubscribers() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+function getData() {
+  return JSON.parse(localStorage.getItem(KEY)) || [];
 }
 
-function saveSubscribers(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+function saveData(d) {
+  localStorage.setItem(KEY, JSON.stringify(d));
 }
 
-/* ID ترتيبي */
-function generateID() {
-  let counter = localStorage.getItem(ID_COUNTER_KEY);
-  counter = counter ? parseInt(counter) + 1 : 1;
-  localStorage.setItem(ID_COUNTER_KEY, counter);
-  return counter.toString().padStart(6, "0");
+function nextID() {
+  let id = parseInt(localStorage.getItem(ID_KEY) || "0") + 1;
+  localStorage.setItem(ID_KEY, id);
+  return id.toString().padStart(6, "0");
 }
 
-/* إضافة مشترك */
 function addSubscriber() {
-  const subscriber = {
-    id: generateID(),
-    name: name.value.trim(),
-    phone: phone.value.trim(),
-    plan: plan.value.trim(),
-    remainingDays: parseInt(duration.value),
+  const s = {
+    id: nextID(),
+    name: name.value,
+    phone: phone.value,
+    plan: plan.value,
+    days: +duration.value,
     meals: {
       chicken: +chicken.value || 0,
       meat: +meat.value || 0,
@@ -34,69 +29,77 @@ function addSubscriber() {
       snack: +snack.value || 0
     }
   };
-
-  const data = getSubscribers();
-  data.push(subscriber);
-  saveSubscribers(data);
-
-  alert(`تم تسجيل ${subscriber.name}\nID: ${subscriber.id}`);
+  const d = getData();
+  d.push(s);
+  saveData(d);
+  alert(`تم الحفظ ✅\nID: ${s.id}`);
 }
 
-/* البحث */
-function findSubscriber(val) {
-  val = val.toLowerCase();
-  return getSubscribers().find(s =>
-    s.id === val || s.phone === val || s.name.toLowerCase().includes(val)
-  );
-}
+let current = null;
 
 function searchSubscriber() {
-  const sub = findSubscriber(search.value.trim());
-  if (!sub) return alert("المشترك غير موجود");
-
-  currentSubscriber = sub;
-  showSubscriberInfo(sub);
-
-  const box = document.getElementById("consumeBox");
-  if (box) box.style.display = "block";
+  const q = document.getElementById("search").value;
+  const d = getData();
+  current = d.find(x => x.id === q || x.phone === q || x.name === q);
+  if (!current) return alert("غير موجود");
+  showInfo(current);
 }
 
-/* عرض */
-function showSubscriberInfo(s) {
-  info.innerHTML = `
-    <p><b>الاسم:</b> ${s.name}</p>
-    <p><b>ID:</b> ${s.id}</p>
-    <p><b>أيام متبقية:</b> ${s.remainingDays}</p>
-    <p>🍗 ${s.meals.chicken} | 🥩 ${s.meals.meat} | 🐟 ${s.meals.fish} | 🍪 ${s.meals.snack}</p>
+function showInfo(s) {
+  document.getElementById("info").innerHTML = `
+  <p>الاسم: ${s.name}</p>
+  <p>ID: ${s.id}</p>
+  <p>أيام: ${s.days}</p>
+  <p>🍗 ${s.meals.chicken} 🥩 ${s.meals.meat} 🐟 ${s.meals.fish} 🍪 ${s.meals.snack}</p>
   `;
 }
 
-/* استهلاك */
 function consumeAll() {
-  const c = +c_chicken.value || 0;
-  const m = +c_meat.value || 0;
-  const f = +c_fish.value || 0;
-  const s = +c_snack.value || 0;
+  if (!current) return alert("ابحث أولاً");
+  current.meals.chicken -= +c1.value || 0;
+  current.meals.meat -= +c2.value || 0;
+  current.meals.fish -= +c3.value || 0;
+  current.meals.snack -= +c4.value || 0;
+  current.days--;
+  saveData(getData());
+  alert("تم التسجيل ✅");
+  showInfo(current);
+}
 
-  if (
-    c > currentSubscriber.meals.chicken ||
-    m > currentSubscriber.meals.meat ||
-    f > currentSubscriber.meals.fish ||
-    s > currentSubscriber.meals.snack
-  ) return alert("الاستهلاك أكبر من المتبقي");
+function loadExpiring() {
+  const d = getData();
+  expiringList.innerHTML = d
+    .filter(x => x.days <= 5)
+    .map(x => `<p>${x.name} - ${x.days} أيام</p>`)
+    .join("");
+}
 
-  currentSubscriber.meals.chicken -= c;
-  currentSubscriber.meals.meat -= m;
-  currentSubscriber.meals.fish -= f;
-  currentSubscriber.meals.snack -= s;
-  currentSubscriber.remainingDays -= (c+m+f+s);
+function exportCSV() {
+  let d = getData();
+  let csv = "id,name,phone,days,chicken,meat,fish,snack\n";
+  d.forEach(x => {
+    csv += `${x.id},${x.name},${x.phone},${x.days},${x.meals.chicken},${x.meals.meat},${x.meals.fish},${x.meals.snack}\n`;
+  });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv]));
+  a.download = "subs.csv";
+  a.click();
+}
 
-  saveSubscribers(
-    getSubscribers().map(s =>
-      s.id === currentSubscriber.id ? currentSubscriber : s
-    )
-  );
-
-  showSubscriberInfo(currentSubscriber);
-  alert("تم تسجيل الاستهلاك ✅");
+function importCSV() {
+  const f = csvFile.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const lines = r.result.split("\n").slice(1);
+    let d = getData();
+    lines.forEach(l => {
+      if (!l) return;
+      const [id,n,p,days,c,m,f,s] = l.split(",");
+      d.push({id,n,p,days:+days,meals:{chicken:+c,meat:+m,fish:+f,snack:+s}});
+    });
+    saveData(d);
+    alert("تم الاستيراد ✅");
+  };
+  r.readAsText(f);
 }
